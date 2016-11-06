@@ -3,7 +3,7 @@ services:
   web:
     build: ./docker/nginx
     ports:
-      - 4444:443
+      - 8888:443
     links:
       - app
   app:

@@ -15,7 +15,7 @@ const app = new Koa
 app.keys = ['xxx']
 
 render(app, {
-  root: path.join(__dirname, 'view'),
+  root: path.join(__dirname, 'views'),
   layout: 'template',
   viewExt: 'html',
   cache: false
@@ -24,13 +24,9 @@ app.context.render = co.wrap(app.context.render)
 
 app
   .use(bodyParser())
-  .use(convert(session()))
+  .use(convert(session(app)))
   .use(passport.initialize())
   .use(passport.session())
-  .use(route.get('/', (ctx) => {
-    ctx.type = 'html'
-    ctx.body = fs.createReadStream('views/index.html')
-  }))
   .use(route.get('/', (ctx) =>
     ctx.render('index')
   ))
