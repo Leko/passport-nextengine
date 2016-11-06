@@ -1,0 +1,20 @@
+version: '2'
+services:
+  web:
+    build: ./docker/nginx
+    ports:
+      - 4444:443
+    links:
+      - app
+  app:
+    build:
+      context: ./
+      dockerfile: docker/app/Dockerfile
+    command: npm start
+    env_file: .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/app/bower_components
+    environment:
+      PORT: 3000
