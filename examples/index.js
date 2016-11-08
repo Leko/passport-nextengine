@@ -8,7 +8,7 @@ const render = require('koa-ejs')
 const session = require('koa-session')
 const convert = require('koa-convert')
 const bodyParser = require('koa-bodyparser')
-const passport = require('koa-passport')
+const passport = require('./passport')
 
 const app = new Koa
 
@@ -27,18 +27,24 @@ app
   .use(convert(session(app)))
   .use(passport.initialize())
   .use(passport.session())
+  // GET /
   .use(route.get('/', (ctx) =>
     ctx.render('index')
   ))
+  // GET /logout
   .use(route.get('/logout', (ctx) => {
     ctx.logout()
     ctx.redirect('/')
   }))
-  .use(route.post('/auth/nextengine', passport.authenticate('nextengine')))
+  // POST /auth/nextengine
+  .use(route.post('/auth/nextengine',
+    passport.authenticate('nextengine')
+  ))
+  // GET /auth/nextengine/callback
   .use(route.get('/auth/nextengine/callback',
     passport.authenticate('nextengine', {
-      successRedirect: '/dashboard',
-      failureRedirect: '/'
+      failureRedirect: '/',
+      successRedirect: '/dashboard'
     })
   ))
   // Require authentication for now
@@ -49,14 +55,14 @@ app
       ctx.redirect('/')
     }
   })
-  .use(route.get('/dashboard', (ctx) =>
-    ctx.render('dashboard', { user: ctx.user })
-  ))
+  // GET /dashboard
+  .use(route.get('/dashboard', (ctx) => {
+    return ctx.render('dashboard', { user: ctx.state.user })
+  }))
 
 // Launch app server
 if (process.env.PORT) {
   app.listen(process.env.PORT)
-  console.log('Server listening on', process.env.PORT)
 } else {
   console.error('Environment variable `PORT` must be required')
 }
