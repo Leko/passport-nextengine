@@ -23,7 +23,12 @@ passport.use(new NextengineStrategy({
       if (u) {
         return Promise.resolve(u)
       } else {
-        return User.query().insert({ uid: user.uid, display_name: user.pic_name })
+        return User.query().insert({
+          uid: user.uid,
+          display_name: user.pic_name,
+          access_token: user.access_token,
+          refresh_token: user.refresh_token,
+        })
       }
     })
     .then(u => done(null, u))

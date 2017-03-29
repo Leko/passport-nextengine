@@ -1,6 +1,6 @@
 {
   "name": "passport-nextengine",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Nextengine authentication strategy for Passport and Node.js",
   "main": "index.js",
   "scripts": {
