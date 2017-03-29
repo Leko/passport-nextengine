@@ -4,7 +4,7 @@
 ## Getting started
 
 ```
-git clone 
+git clone git@github.com:Leko/passport-nextengine.git
 cd passport-nextengine/examples
 docker-compose build
 docker-compose up
