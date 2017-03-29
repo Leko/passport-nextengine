@@ -9,6 +9,8 @@ const session = require('koa-session')
 const convert = require('koa-convert')
 const bodyParser = require('koa-bodyparser')
 const passport = require('./passport')
+const Nextengine = require('next-engine')
+const { User } = require('next-engine/Entity')
 
 const app = new Koa
 
@@ -57,7 +59,15 @@ app
   })
   // GET /dashboard
   .use(route.get('/dashboard', (ctx) => {
-    return ctx.render('dashboard', { user: ctx.state.user })
+    const client = new Nextengine({
+      clientId: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      accessToken: ctx.state.user.access_token,
+      refreshToken: ctx.state.user.refresh_token,
+    })
+
+    return client.query(User).get()
+      .then(res => ctx.render('dashboard', { user: res }))
   }))
 
 // Launch app server
